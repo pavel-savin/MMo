@@ -108,7 +108,8 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'flatpages/post_edit.html'
-
+    
+    # TODO: Проверка на группу 'authors' и права на редактирование поста
     # Проверка на группу 'authors'
     # def dispatch(self, request, *args, **kwargs):
     #     if not request.user.groups.filter(name='authors').exists():
@@ -173,7 +174,8 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'flatpages/post_delete.html'
-
+    
+    # TODO: Проверка на группу 'authors' и права на удаление поста
     # Проверка на группу 'authors'
     # def dispatch(self, request, *args, **kwargs):
     #     if not request.user.groups.filter(name='authors').exists():

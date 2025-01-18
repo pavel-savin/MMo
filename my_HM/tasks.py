@@ -10,8 +10,8 @@ def send_post_notification(post_id):
 
     for subscriber in subscribers:
         send_mail(
-            f'Новость: {post.article_title_news}',
-            f'Новая новость: {post.text_title_news}\nЧитать полностью: {post.get_absolute_url()}',
+            f'Пост: {post.article_title_news}',
+            f'Новый пост: {post.text_title_news}\nЧитать полностью: {post.get_absolute_url()}',
             settings.DEFAULT_FROM_EMAIL,
             [subscriber.user.email]
         )
@@ -30,8 +30,8 @@ def send_weekly_newsletter():
     subscribers = Subscription.objects.filter(category__in=[post.post_category.all() for post in posts]).values_list('user__email', flat=True).distinct()
 
     # Создаем письмо
-    subject = 'Еженедельная рассылка новостей'
-    message = 'Вот новости за последнюю неделю:\n\n'
+    subject = 'Еженедельная рассылка постов'
+    message = 'Вот посты за последнюю неделю:\n\n'
 
     for post in posts:
         message += f'{post.article_title_news} - {post.get_absolute_url()}\n'

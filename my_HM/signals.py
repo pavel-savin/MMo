@@ -22,42 +22,10 @@ def send_email(subject, message, recipient_list):
 
 
 # Уведомление подписчиков при добавлении поста
-@receiver(post_save, sender=User)
-def send_welcome_email(sender, instance, created, **kwargs):
-    if created:  # Отправляем письмо только при создании нового пользователя
-        
-        # Генерация токена для подтверждения email
-        token = default_token_generator.make_token(instance)
-        uid = urlsafe_base64_encode(str(instance.pk).encode())
-        
-        # Получаем текущий домен для формирования URL
-        domain = get_current_site(None).domain
-        # Используйте правильный путь для подтверждения почты
-        path = reverse('sign:email_verification', kwargs={'uidb64': uid, 'token': token})  
-        confirm_url = f'http://{domain}{path}'
-
-        # Формируем сообщение с приветствием и подтверждением
-        subject = 'Добро пожаловать на наш сайт!'
-
-        message = f"""
-        Здравствуйте, {instance.username}!
-        Спасибо за регистрацию на нашем сайте!
-        Для завершения регистрации и подтверждения вашей электронной почты, пожалуйста, перейдите по следующей ссылке:
-        {confirm_url}
-        Если вы не регистрировались на сайте, просто проигнорируйте это письмо.
-        С уважением,
-        Ваша команда!
-        """
-
-        send_email(
-            subject=subject,
-            message=message,
-            recipient_list=[instance.email],
-        )
-
 @receiver(post_save, sender=Response)
 def notify_user_on_acceptance(sender, instance, created, **kwargs):
-    if not created and instance.status == 'accepted':  # например, статус отклика 'accepted'
+    print(f'Создание отклика: {created}, Принят: {instance.accepted}')
+    if not created and instance.accepted == 'accepted':  
         send_email(
             subject='Ваш отклик принят!',
             message=f'Ваш отклик на объявление "{instance.post.article_title_news}" принят.',

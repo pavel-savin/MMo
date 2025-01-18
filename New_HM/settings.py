@@ -156,7 +156,7 @@ STATICFILES_DIRS = [
 
 
 ACCOUNT_FORMS = {
-    'signup': 'sign.forms.BasicSignupForm',  # Замени your_app на имя приложения
+    'signup': 'sign.views.BaseRegisterForm',  # Замени your_app на имя приложения
 }
 
 
@@ -181,7 +181,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 
