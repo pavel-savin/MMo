@@ -1,0 +1,42 @@
+{% extends 'flatpages/default.html' %}
+{% load socialaccount %}  <!-- Загрузим теги для соц. входа -->
+
+{% block content %}
+<h2>Войти в систему</h2>
+
+<!-- Блок для обычного входа -->
+<div class="login-block">
+    <h3>Обычный вход</h3>
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td>{{ form.username.label_tag }}</td>
+                <td>{{ form.username }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.password.label_tag }}</td>
+                <td>{{ form.password }}</td>
+            </tr>
+        </table>
+        <input type="submit" value="Войти">
+    </form>
+</div>
+
+<!-- Блок для авторизации через Яндекс -->
+<div class="social-login-block" style="margin-top: 20px;">
+    <h3>Авторизация через Яндекс</h3>
+    <a href="{% provider_login_url 'yandex' %}" class="btn btn-primary" 
+       style="display: block; margin-top: 10px; background-color: #FF9900; color: white; text-align: center; padding: 10px;">
+        Войти через Яндекс
+    </a>
+</div>
+
+<!-- Блок регистрации -->
+<div class="register-block" style="margin-top: 20px;">
+    <h3>Ещё нет аккаунта?</h3>
+    <button style="display: block; margin: 10px auto;">
+        <a href="{% url 'signup' %}">Регистрация</a>
+    </button>
+</div>
+{% endblock %}

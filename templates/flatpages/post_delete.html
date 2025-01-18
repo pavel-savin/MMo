@@ -1,0 +1,16 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h1>Удаление записи</h1>
+<hr>
+{% if request.user.groups.filter(name='authors').exists %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Удалить "{{ object.article_title_news }}"?</p>
+        <input type="submit" value="Удалить" />
+    </form>
+{% else %}
+    <p>У вас нет прав на удаление записи.</p>
+{% endif %}
+{% endblock content %}
+

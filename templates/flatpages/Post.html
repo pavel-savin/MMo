@@ -1,0 +1,38 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block title %}{{ Post.article_title_news|filter_words }}{% endblock title %}
+
+{% block content %}
+<h1>{{ Post.article_title_news|filter_words }}</h1>
+<h2>{{ Post.automatic_data_time|date:'d M Y' }}</h2>
+{% if Post.image %}
+    <img src="{{ Post.image.url }}" alt="Изображение поста" class="img-fluid mb-3" style="width: 75%; height: auto;">
+{% endif %}
+<h5>{{ Post.text_title_news|filter_words }}</h5>
+
+<!-- Форма для добавления отклика (только для авторизованных пользователей) -->
+{% if user.is_authenticated %}
+    <h4>Добавить отклик</h4>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Отправить отклик</button>
+    </form>
+{% else %}
+    <p>Для добавления отклика нужно <a href="{% url 'login' %}">войти</a>.</p>
+{% endif %}
+
+<!-- Список откликов (доступен всем) -->
+<h4>Отклики:</h4>
+{% for response in responses %}
+    <div class="response">
+        <strong>{{ response.user.username }}</strong> ({{ response.created_at|date:"d M Y" }}) 
+        <p>{{ response.text }}</p>
+        <p>Status: {{ response.accepted|yesno:"Принят,Не принят" }}</p>
+    </div>
+{% empty %}
+    <p>Пока нет откликов.</p>
+{% endfor %}
+{% endblock content %}
+

@@ -1,0 +1,5 @@
+<p>Категории:
+    {% for category in post.post_category.all %}
+        <span id="category-{{ category.id }}" class="badge bg-info text-dark">{{ category.categories }}</span>
+    {% endfor %}
+</p>
