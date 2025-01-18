@@ -22,17 +22,6 @@ class Author(models.Model):
     def __str__(self):
         return self.user.username
     
-    def update_rating(self):
-        # Cуммарный рейтинг каждой статьи автора * 3
-        post_rating = Post.objects.filter(author=self).aggregate(Sum('rating'))['rating__sum'] or 0
-        post_rating *= 3
-        # Суммарный рейтинг всех комментариев автора
-        comment_rating = Comment.objects.filter(user=self.user).aggregate(Sum('rating'))['rating__sum'] or 0
-        # Cуммарный рейтинг всех комментариев к статьям автора
-        post_comments_rating = Comment.objects.filter(post__author=self).aggregate(Sum('rating'))['rating__sum'] or 0
-        # Итоговый рейтинг
-        self.rating = post_rating + comment_rating + post_comments_rating 
-        self.save()
     
 class Category(models.Model):
     categories = models.CharField(max_length=100, unique=True)

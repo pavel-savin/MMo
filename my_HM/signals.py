@@ -33,7 +33,7 @@ def send_welcome_email(sender, instance, created, **kwargs):
         # Получаем текущий домен для формирования URL
         domain = get_current_site(None).domain
         # Используйте правильный путь для подтверждения почты
-        path = reverse('account:email_verification', kwargs={'uidb64': uid, 'token': token})  # Убедитесь, что у вас есть этот путь
+        path = reverse('sign:email_verification', kwargs={'uidb64': uid, 'token': token})  
         confirm_url = f'http://{domain}{path}'
 
         # Формируем сообщение с приветствием и подтверждением
@@ -41,15 +41,10 @@ def send_welcome_email(sender, instance, created, **kwargs):
 
         message = f"""
         Здравствуйте, {instance.username}!
-
         Спасибо за регистрацию на нашем сайте!
-
         Для завершения регистрации и подтверждения вашей электронной почты, пожалуйста, перейдите по следующей ссылке:
-
         {confirm_url}
-
         Если вы не регистрировались на сайте, просто проигнорируйте это письмо.
-
         С уважением,
         Ваша команда!
         """
@@ -84,7 +79,7 @@ def notify_category(sender, instance, created, **kwargs):
     if created:
         send_email(
             subject='Ваше объявление в категории',
-            message=f'Ваше объявление "{instance.article_title_news}" размещено в категории: {", ".join(instance.post_category.values_list("name", flat=True))}.',
+            message=f'Ваше объявление "{instance.article_title_news}" размещено в категории: {", ".join(instance.post_category.values_list("categories", flat=True))}.',
             recipient_list=[instance.author.user.email],
         )
 

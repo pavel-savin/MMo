@@ -156,7 +156,7 @@ STATICFILES_DIRS = [
 
 
 ACCOUNT_FORMS = {
-    'signup': 'sign.CustomSignupForm',  # Замени your_app на имя приложения
+    'signup': 'sign.forms.BasicSignupForm',  # Замени your_app на имя приложения
 }
 
 

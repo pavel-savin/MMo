@@ -31,6 +31,8 @@ class BaseRegisterView(CreateView):
     model = User
     form_class = BaseRegisterForm
     success_url = '/'
+    
+    
 
     def form_valid(self, form):
         response = super().form_valid(form)  # Сохраняем пользователя
