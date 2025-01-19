@@ -22,6 +22,9 @@
             <!-- Включаем отображение изображения -->
             {% include 'flatpages/reused/image_display.html' %}
 
+            <!-- Включаем отображение видео -->
+            {% include 'flatpages/reused/video_display.html' %}
+
             <p>{{ post.text_title_news|truncatewords:20|filter_words }}...</p>
 
             <!-- Кнопка "Читать далее" для перехода на страницу с полным текстом -->

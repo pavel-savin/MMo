@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (
-    PostsList, PostDetail, NewsSearchView, PostCreateView, PostUpdateView, PostDeleteView, ResponseCreateView, UserResponsesView
+    PostsList, PostDetail, NewsSearchView, PostCreateView, PostUpdateView, PostDeleteView, ResponseCreateView, UserResponsesView, get_video,
+    get_streaming_video
 ) 
 from .views import subscribe_to_category, unsubscribe_from_category
 
@@ -24,4 +25,7 @@ urlpatterns = [
     
     path('post/<int:pk>/respond/', ResponseCreateView.as_view(), name='create_response'),
     path('responses/', UserResponsesView.as_view(), name='user_responses'),
+    
+    path('articles/stream/<int:pk>/', get_streaming_video, name='stream'),
+    path('<int:pk>/', get_video, name='video'),
 ]

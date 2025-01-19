@@ -7,7 +7,16 @@
 <h1>{{ Post.article_title_news|filter_words }}</h1>
 <h2>{{ Post.automatic_data_time|date:'d M Y' }}</h2>
 {% if Post.image %}
-    <img src="{{ Post.image.url }}" alt="Изображение поста" class="img-fluid mb-3" style="width: 75%; height: auto;">
+    <img src="{{ Post.image.url }}" alt="Изображение поста" class="img-fluid mb-3" style="width: 34%; height: 20%;">
+{% endif %}
+{% if Post.video %}
+    <div class="video-container mb-4">
+        <h3>Видео:</h3>
+        <video width="65%" controls>
+            <source src="{{ Post.video.url }}" type="video/mp4">
+            Ваш браузер не поддерживает воспроизведение видео.
+        </video>
+    </div>
 {% endif %}
 <h5>{{ Post.text_title_news|filter_words }}</h5>
 

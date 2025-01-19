@@ -8,5 +8,6 @@ admin.site.register(PostCategory)
 admin.site.register(Comment)
 admin.site.register(Subscription)
 admin.site.register(Response)
+admin.site.register(Video)
 
 # Register your models here.

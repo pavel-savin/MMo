@@ -5,7 +5,7 @@ from .models import Post, Subscription, Response
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['post_category', 'article_title_news', 'text_title_news', 'image']
+        fields = ['post_category', 'article_title_news', 'text_title_news', 'image', 'video',]
 
 class SubscriptionForm(forms.ModelForm):
     class Meta:

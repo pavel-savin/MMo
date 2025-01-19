@@ -54,7 +54,8 @@ class Post(models.Model):
     text_title_news = models.TextField()
     rating = models.IntegerField(default=0)
     image = models.ImageField(upload_to='post_images/', blank=True, null=True)
-     
+    video = models.FileField(upload_to='video/', blank=True, null=True)
+    
     def preview(self):
         return f"{self.text_title_news[:124]}..."
     

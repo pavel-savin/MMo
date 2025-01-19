@@ -1,0 +1,13 @@
+{% if post.video %}
+    <div class="video-container mb-4">
+        <h3>Видео:</h3>
+        <video width="65%" controls>
+            <source src="{{ post.video.url }}" type="video/mp4">
+            Ваш браузер не поддерживает воспроизведение видео.
+        </video>
+    </div>
+{% endif %}
+
+
+
+

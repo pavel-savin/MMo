@@ -21,6 +21,9 @@
                 <!-- Включаем отображение изображения -->
                 {% include 'flatpages/reused/image_display.html' %}
 
+                <!-- Включаем отображение видео -->
+                {% include 'flatpages/reused/video_display.html' %}
+
                 <p class="post-preview">
                     {{ post.text_title_news|slice:":20"|filter_words }}...
                 </p>

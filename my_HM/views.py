@@ -10,9 +10,11 @@ from django.http import HttpResponseForbidden
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib.auth.decorators import login_required
-from .models import Category, Subscription, Post, Author, Response
+from .models import Category, Subscription, Post, Author, Response, Video
+from django.http import StreamingHttpResponse
+from .services import open_file
 
 
 
@@ -161,7 +163,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
         if post.author.user != request.user:
             return HttpResponseForbidden("Вы не можете редактировать чужие посты.")
         return super().dispatch(request, *args, **kwargs)
-
+    # TODO: Проверка на группу 'authors' и права на редактирование поста
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_author'] = self.request.user.groups.filter(name='authors').exists()
@@ -242,26 +244,23 @@ def unsubscribe_from_category(request, category_id):
 
 
 
-# # Универсальный класс для создания, обновления и удаления постов
-# class PostCreateView(BasePostView, CreateView):
-#     form_class = PostForm
-#     model = Post
-#     template_name = 'flatpages/post_edit.html'
-    
-#     def form_valid(self, form):
-#         post = form.save(commit=False)
-#         # Устанавливаем тип в зависимости от URL
-#         if 'news' in self.request.path:
-#             post.article_or_news = 0  # новость
-#         elif 'articles' in self.request.path:
-#             post.article_or_news = 1  # статья
-#         return super().form_valid(form)
 
-# class PostUpdateView(BasePostView, UpdateView):
-#     form_class = PostForm
-#     model = Post
-#     template_name = 'flatpages/post_edit.html'
+def get_list_video(request):
+    posts = Post.objects.all()
+    return render(request, 'reused/home.html', {'video_list': Video.objects.all()})
 
-# class PostDeleteView(BasePostView, DeleteView):
-#     model = Post
-#     template_name = 'flatpages/post_delete.html'
+
+def get_video(request, pk: int):
+    _video = get_object_or_404(Video, id=pk)
+    return render(request, "reused/video_display.html", {"video": _video})
+
+
+def get_streaming_video(request, pk: int):
+    file, status_code, content_length, content_range = open_file(request, pk)
+    response = StreamingHttpResponse(file, status=status_code, content_type='video/mp4')
+
+    response['Accept-Ranges'] = 'bytes'
+    response['Content-Length'] = str(content_length)
+    response['Cache-Control'] = 'no-cache'
+    response['Content-Range'] = content_range
+    return response

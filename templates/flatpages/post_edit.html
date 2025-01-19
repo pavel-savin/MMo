@@ -3,18 +3,17 @@
 {% block content %}
 <h1>Создание или редактирование записи</h1>
 <hr>
-{% comment %} {% if is_author %} {% endcomment %}
-    <form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        {% if form.image.value %}
-            <div>
-                <p>Текущее изображение:</p>
-                <img src="{{ form.image.value.url }}" alt="Загруженное изображение" style="max-width: 300px; max-height: 300px;">
-            </div>
-        {% endif %}
-        <input type="submit" value="Сохранить" />
-    </form>
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if form.image.value %}
+        <div>
+            <p>Текущее изображение:</p>
+            <img src="{{ form.image.value.url }}" alt="Загруженное изображение" style="max-width: 300px; max-height: 300px;">
+        </div>
+    {% endif %}
+    <input type="submit" value="Сохранить" />
+</form>
 {% comment %} {% else %}
     <p>У вас нет прав на создание или редактирование записей.</p>
 {% endif %} {% endcomment %}
