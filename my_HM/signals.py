@@ -24,8 +24,7 @@ def send_email(subject, message, recipient_list):
 # Уведомление подписчиков при добавлении поста
 @receiver(post_save, sender=Response)
 def notify_user_on_acceptance(sender, instance, created, **kwargs):
-    print(f'Создание отклика: {created}, Принят: {instance.accepted}')
-    if not created and instance.accepted == 'accepted':  
+    if created or instance.accepted == 'accepted':  
         send_email(
             subject='Ваш отклик принят!',
             message=f'Ваш отклик на объявление "{instance.post.article_title_news}" принят.',
@@ -44,6 +43,7 @@ def send_reminder_for_response_filtering():
 
 @receiver(post_save, sender=Post)
 def notify_category(sender, instance, created, **kwargs):
+    print(f"{created}")
     if created:
         send_email(
             subject='Ваше объявление в категории',
