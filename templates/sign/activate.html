@@ -1,0 +1,14 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h2>Введите код активации</h2>
+<form method="post">
+    {% csrf_token %}
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <label for="code">Код активации:</label>
+    <input type="text" name="code" id="code" required>
+    <button type="submit">Активировать</button>
+</form>
+{% endblock %}
