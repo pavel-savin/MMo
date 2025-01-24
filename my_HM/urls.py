@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    PostsList, PostDetail, NewsSearchView, PostCreateView, PostUpdateView, PostDeleteView, ResponseCreateView, UserResponsesView
+    PostsList, PostDetail, NewsSearchView, PostCreateView, PostUpdateView, PostDeleteView, MyResponsesView, ResponsesToMyPostsView
 ) 
 from .views import subscribe_to_category, unsubscribe_from_category
 
@@ -22,6 +22,6 @@ urlpatterns = [
     path('category/<int:category_id>/unsubscribe/', 
         unsubscribe_from_category, name='unsubscribe_from_category'),
     
-    path('post/<int:pk>/respond/', ResponseCreateView.as_view(), name='create_response'),
-    path('responses/', UserResponsesView.as_view(), name='user_responses'),
+    path('my-responses/', MyResponsesView.as_view(), name='my_responses'),
+    path('responses-to-my-posts/', ResponsesToMyPostsView.as_view(), name='responses_to_my_posts'),
 ]

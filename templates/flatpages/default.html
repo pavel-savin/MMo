@@ -55,8 +55,11 @@
                                 <a class="nav-link" href="{% url 'news_create' %}">Создать объявление</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'user_responses' %}">Отклики</a>
+                                <a class="nav-link" href="{% url 'responses_to_my_posts' %}">Отклики на мои посты</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'my_responses' %}">Мои отклики</a>
+                            </li>                            
                         </ul>
                     {% endif %}
                 </div>               

@@ -4,16 +4,15 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView)
-from .filter_search import PostFilter
+from .filter_search import PostFilter, ResponseFilter
 from .forms import PostForm, ResponseForm
 from django.http import HttpResponseForbidden
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from .models import Category, Subscription, Post, Author, Response
-
 
 
 # Список постов
@@ -80,7 +79,7 @@ class NewsSearchView(ListView):
     ordering = '-automatic_data_time'
     template_name = 'flatpages/news_search.html'
     context_object_name = 'news'
-    paginate_by = 1
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -109,16 +108,8 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'flatpages/post_edit.html'
     
-    # TODO: Проверка на группу 'authors' и права на редактирование поста
-    # Проверка на группу 'authors'
-    # def dispatch(self, request, *args, **kwargs):
-    #     if not request.user.groups.filter(name='authors').exists():
-    #         return HttpResponseForbidden("У вас нет прав на создание постов.")
-    #     return super().dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['is_author'] = self.request.user.groups.filter(name='authors').exists()
         return context
 
     def get_success_url(self):
@@ -144,10 +135,6 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     
         return super().form_valid(form)
 
-
-
-
-
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
@@ -156,8 +143,6 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     # Проверка на группу 'authors' и права на редактирование поста
     def dispatch(self, request, *args, **kwargs):
         post = self.get_object()
-        # if not request.user.groups.filter(name='authors').exists():
-        #     return HttpResponseForbidden("У вас нет прав на редактирование постов.")
         if post.author.user != request.user:
             return HttpResponseForbidden("Вы не можете редактировать чужие посты.")
         return super().dispatch(request, *args, **kwargs)
@@ -175,12 +160,6 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'flatpages/post_delete.html'
     
-    # TODO: Проверка на группу 'authors' и права на удаление поста
-    # Проверка на группу 'authors'
-    # def dispatch(self, request, *args, **kwargs):
-    #     if not request.user.groups.filter(name='authors').exists():
-    #         return HttpResponseForbidden("У вас нет прав на удаление постов.")
-    #     return super().dispatch(request, *args, **kwargs)
 
 class ResponseCreateView(LoginRequiredMixin, CreateView):
     model = Response
@@ -197,21 +176,29 @@ class ResponseCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('post_detail', kwargs={'pk': self.kwargs['pk']})
 
-    
-class UserResponsesView(LoginRequiredMixin, ListView):
+class ResponsesToMyPostsView(LoginRequiredMixin, ListView):
     model = Response
-    template_name = 'flatpages/user_responses.html'
+    template_name = 'flatpages/responses_to_my_posts.html'
     context_object_name = 'responses'
+    paginate_by = 10
 
     def get_queryset(self):
-        # Получаем отклики на посты, автором которых является текущий пользователь
-        return Response.objects.filter(post__author__user=self.request.user).order_by('-created_at')
+        queryset = Response.objects.filter(post__author__user=self.request.user).order_by('-created_at')
+        self.filterset = ResponseFilter(self.request.GET, queryset=queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filterset'] = self.filterset
+        return context
 
     def post(self, request, *args, **kwargs):
-        # Получаем отклик по его ID и обновляем статус
+        # Получаем параметры из запроса
         response_id = request.POST.get('response_id')
         action = request.POST.get('action')  # 'accept' или 'delete'
-        response = get_object_or_404(Response, id=response_id)
+
+        # Получаем отклик
+        response = get_object_or_404(Response, id=response_id, post__author__user=request.user)
 
         if action == 'accept':
             response.accepted = True
@@ -219,9 +206,31 @@ class UserResponsesView(LoginRequiredMixin, ListView):
         elif action == 'delete':
             response.delete()
 
-        # Перенаправляем обратно на страницу откликов
-        return redirect('user_responses')
+        # Перенаправляем обратно на ту же страницу
+        return redirect('responses_to_my_posts')
+
     
+class MyResponsesView(LoginRequiredMixin, ListView):
+    model = Response
+    template_name = 'flatpages/my_responses.html'
+    context_object_name = 'responses'
+    paginate_by = 10
+
+    def get_queryset(self):
+        # Получаем отклики текущего пользователя
+        queryset = Response.objects.filter(user=self.request.user).order_by('-created_at')
+
+        # Применяем фильтр
+        self.filterset = ResponseFilter(self.request.GET, queryset=queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Передаём фильтр в контекст
+        context['filterset'] = self.filterset
+        return context
+       
 @login_required
 def subscribe_to_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
@@ -240,28 +249,3 @@ def unsubscribe_from_category(request, category_id):
     next_url = request.GET.get('next', 'posts_list')
     return redirect(next_url)
 
-
-
-# # Универсальный класс для создания, обновления и удаления постов
-# class PostCreateView(BasePostView, CreateView):
-#     form_class = PostForm
-#     model = Post
-#     template_name = 'flatpages/post_edit.html'
-    
-#     def form_valid(self, form):
-#         post = form.save(commit=False)
-#         # Устанавливаем тип в зависимости от URL
-#         if 'news' in self.request.path:
-#             post.article_or_news = 0  # новость
-#         elif 'articles' in self.request.path:
-#             post.article_or_news = 1  # статья
-#         return super().form_valid(form)
-
-# class PostUpdateView(BasePostView, UpdateView):
-#     form_class = PostForm
-#     model = Post
-#     template_name = 'flatpages/post_edit.html'
-
-# class PostDeleteView(BasePostView, DeleteView):
-#     model = Post
-#     template_name = 'flatpages/post_delete.html'

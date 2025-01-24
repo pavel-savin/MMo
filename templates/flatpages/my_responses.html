@@ -1,0 +1,54 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Мои отклики на чужие посты</h1>
+
+    <!-- Форма фильтра -->
+    <form method="get" class="mb-4">
+        {{ filterset.form.as_p }}
+        <button type="submit" class="btn btn-primary">Применить фильтр</button>
+    </form>
+
+    <!-- Пагинация сверху страницы -->
+    {% include 'flatpages/reused/pagination.html' %}
+
+    <h2>Ваши отклики</h2>
+    {% if responses %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Объявление</th>
+                    <th>Категория</th>
+                    <th>Текст отклика</th>
+                    <th>Автор поста</th>
+                    <th>Дата</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for response in responses %}
+                <tr>
+                    <td>{{ response.post.article_title_news }}</td>
+                    <td>
+                        {% for category in response.post.post_category.all %}
+                            {{ category.categories }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ response.text }}</td>
+                    <td>{{ response.post.author.user.username }}</td>
+                    <td>{{ response.created_at }}</td>
+                    <td>{{ response.accepted|yesno:"Принят,Не принят" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-muted">Откликов пока нет.</p>
+    {% endif %}
+
+    <!-- Пагинация внизу страницы -->
+    {% include 'flatpages/reused/pagination.html' %}
+</div>
+{% endblock %}
+
