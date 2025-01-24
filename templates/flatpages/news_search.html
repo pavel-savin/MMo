@@ -1,0 +1,46 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block title %}Поиск новостей{% endblock title %}
+
+{% block content %}
+<h1>Поиск новостей</h1>
+<form method="get">
+    {{ filterset.form.as_p }}  <!-- Форма фильтра -->
+    <button type="submit">Найти</button>
+</form>
+
+<!-- Пагинация сверху страницы -->
+{% include 'flatpages/reused/pagination.html' %}
+
+<h2>Результаты поиска</h2>
+{% if news %}
+    {% for post in news %}
+        <div>
+            <h2>{{ post.article_title_news|filter_words }}</h2>
+
+            <!-- Включаем отображение изображения -->
+            {% include 'flatpages/reused/image_display.html' %}
+
+            <p>{{ post.text_title_news|truncatewords:20|filter_words }}...</p>
+
+            <!-- Кнопка "Читать далее" для перехода на страницу с полным текстом -->
+            <a href="{% url 'post_detail' pk=post.pk %}" class="btn btn-primary">Читать далее</a>
+
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Ничего не найдено.</p>
+{% endif %}
+
+<!-- Пагинация внизу страницы -->
+{% include 'flatpages/reused/pagination.html' %}
+
+{% endblock content %}
+
+
+
+
+
+
+

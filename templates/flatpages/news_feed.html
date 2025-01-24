@@ -1,0 +1,46 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block title %}Все статьи{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4 text-center">Все статьи</h1>
+    <hr class="mb-4">
+
+    <!-- Пагинация сверху страницы -->
+    {% include 'flatpages/reused/pagination.html' %}
+
+    {% if Posts %}
+        {% for post in Posts %}
+            <div class="post mb-5">
+                <hr class="mb-4">
+                <h2 class="post-title">{{ post.article_title_news|filter_words }}</h2>
+                <h3 class="post-date text-muted">{{ post.automatic_data_time|date:'d M Y' }}</h3>
+
+                <!-- Включаем отображение изображения -->
+                {% include 'flatpages/reused/image_display.html' %}
+
+                <p class="post-preview">
+                    {{ post.text_title_news|slice:":20"|filter_words }}...
+                </p>
+
+                <!-- Включаем отображение подписки/отписки с категориями -->
+                {% include 'flatpages/reused/category_subscription.html' %}
+
+                <!-- Включаем кнопку "Читать далее" -->
+                {% include 'flatpages/reused/read_more_button.html' %}
+                <hr class="mt-4">                
+            </div>
+        {% endfor %}
+
+        <!-- Пагинация внизу страницы -->
+        {% include 'flatpages/reused/pagination.html' %}
+    {% else %}
+        <h2 class="text-center my-5">Статей нет!</h2>
+    {% endif %}
+</div>
+{% endblock content %}
+
+
+

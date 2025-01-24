@@ -1,0 +1,13 @@
+<p>Категории: 
+    {% for category in post.post_category.all %}
+        <span id="category-{{ category.id }}" class="badge bg-info text-dark">{{ category.categories }}</span>
+        
+        {% if category.id in subscribed_categories %}
+            <a href="{% url 'unsubscribe_from_category' category.id %}?next={{ request.path }}" 
+               class="btn btn-danger btn-sm">Отписаться</a>
+        {% else %}
+            <a href="{% url 'subscribe_to_category' category.id %}?next={{ request.path }}" 
+               class="btn btn-success btn-sm">Подписаться</a>
+        {% endif %}
+    {% endfor %}
+</p>
