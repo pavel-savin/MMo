@@ -13,10 +13,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from celery.schedules import crontab
+import mimetypes
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -43,6 +45,9 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.flatpages",
     "django_extensions",
+    # Фото + видео поля
+    "ckeditor",
+    "ckeditor_uploader",
     # Приложения
     "my_HM",
     "sign",
@@ -222,6 +227,32 @@ MEDIA_URL = '/media/'
 # Путь для сохранения медиафайлов
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+CKEDITOR_UPLOAD_PATH = 'uploads/'  # Путь для загрузки файлов CKEditor
+
+mimetypes.add_type("video/mp4", ".mp4", True)
+mimetypes.add_type("video/webm", ".webm", True)
+mimetypes.add_type("video/ogg", ".ogv", True)
+
+# Настройки для загружаемых файлов
+ALLOWED_FILE_TYPES = [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+]
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': 'auto',
+        'filebrowserUploadUrl': '/ckeditor/upload/',
+        'filebrowserBrowseUrl': '/ckeditor/browse/',
+        'extraAllowedContent': 'iframe[*]; video[*]{*}(*); audio[*]{*}(*); img[*]{*}(*);',  # Добавляем поддержку iframe
+    },
+}
 
 
 

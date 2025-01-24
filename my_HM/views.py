@@ -35,8 +35,6 @@ class PostsList(ListView):
         return context
 
 
-
-
 # Детали новости
 class PostDetail(DetailView):
     model = Post

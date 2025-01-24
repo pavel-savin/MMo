@@ -17,10 +17,6 @@
                 <hr class="mb-4">
                 <h2 class="post-title">{{ post.article_title_news|filter_words }}</h2>
                 <h3 class="post-date text-muted">{{ post.automatic_data_time|date:'d M Y' }}</h3>
-
-                <!-- Включаем отображение изображения -->
-                {% include 'flatpages/reused/image_display.html' %}
-
                 <p class="post-preview">
                     {{ post.text_title_news|slice:":20"|filter_words }}...
                 </p>

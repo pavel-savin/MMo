@@ -1,4 +1,6 @@
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from .views import (
     PostsList, PostDetail, NewsSearchView, PostCreateView, PostUpdateView, PostDeleteView, MyResponsesView, ResponsesToMyPostsView
 ) 
@@ -24,4 +26,9 @@ urlpatterns = [
     
     path('my-responses/', MyResponsesView.as_view(), name='my_responses'),
     path('responses-to-my-posts/', ResponsesToMyPostsView.as_view(), name='responses_to_my_posts'),
-]
+    
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+]   
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

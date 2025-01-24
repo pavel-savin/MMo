@@ -30,4 +30,8 @@ urlpatterns = [
     path('sign/', include('sign.urls')),
     path('', lambda request: redirect('/news/')),  # редирект главной страницы на /news/
     path('accounts/', include('allauth.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# if settings.DEBUG:  # Только в режиме отладки
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

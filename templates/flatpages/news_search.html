@@ -18,10 +18,6 @@
     {% for post in news %}
         <div>
             <h2>{{ post.article_title_news|filter_words }}</h2>
-
-            <!-- Включаем отображение изображения -->
-            {% include 'flatpages/reused/image_display.html' %}
-
             <p>{{ post.text_title_news|truncatewords:20|filter_words }}...</p>
 
             <!-- Кнопка "Читать далее" для перехода на страницу с полным текстом -->
