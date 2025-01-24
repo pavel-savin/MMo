@@ -6,10 +6,11 @@
 {% block content %}
 <h1>{{ Post.article_title_news|filter_words }}</h1>
 <h2>{{ Post.automatic_data_time|date:'d M Y' }}</h2>
-{% if Post.image %}
-    <img src="{{ Post.image.url }}" alt="Изображение поста" class="img-fluid mb-3" style="width: 75%; height: auto;">
-{% endif %}
-<h5>{{ Post.text_title_news|filter_words }}</h5>
+
+<!-- Отображение содержимого с поддержкой CKEditor -->
+<div class="post-content">
+    {{ Post.text_title_news|safe }}
+</div>
 
 <!-- Форма для добавления отклика (только для авторизованных пользователей) -->
 {% if user.is_authenticated %}
@@ -35,4 +36,5 @@
     <p>Пока нет откликов.</p>
 {% endfor %}
 {% endblock content %}
+
 

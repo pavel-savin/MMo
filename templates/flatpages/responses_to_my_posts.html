@@ -30,15 +30,19 @@
             <tbody>
                 {% for response in responses %}
                 <tr>
-                    <td>{{ response.post.article_title_news }}</td>
+                    <td>
+                        <a href="{% url 'post_detail' pk=response.post.pk %}">
+                            {{ response.post.article_title_news|safe }}
+                        </a>
+                    </td>
                     <td>
                         {% for category in response.post.post_category.all %}
                             {{ category.categories }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>
-                    <td>{{ response.text }}</td>
+                    <td>{{ response.text|safe }}</td>
                     <td>{{ response.user.username }}</td>
-                    <td>{{ response.created_at }}</td>
+                    <td>{{ response.created_at|date:"d M Y" }}</td>
                     <td>{{ response.accepted|yesno:"Принят,Не принят" }}</td>
                     <td>
                         <form method="post">
@@ -62,4 +66,5 @@
     {% include 'flatpages/reused/pagination.html' %}
 </div>
 {% endblock %}
+
 

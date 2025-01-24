@@ -17,16 +17,18 @@
                 <hr class="mb-4">
                 <h2 class="post-title">{{ post.article_title_news|filter_words }}</h2>
                 <h3 class="post-date text-muted">{{ post.automatic_data_time|date:'d M Y' }}</h3>
-                <p class="post-preview">
-                    {{ post.text_title_news|slice:":20"|filter_words }}...
-                </p>
+                
+                <!-- Поддержка HTML контента -->
+                <div class="post-preview">
+                    {{ post.text_title_news|safe|truncatewords:50 }}
+                </div>
 
                 <!-- Включаем отображение подписки/отписки с категориями -->
                 {% include 'flatpages/reused/category_subscription.html' %}
 
                 <!-- Включаем кнопку "Читать далее" -->
-                {% include 'flatpages/reused/read_more_button.html' %}
-                <hr class="mt-4">                
+                <a href="{% url 'post_detail' pk=post.pk %}" class="btn btn-primary mt-2">Читать далее</a>
+                <hr class="mt-4">
             </div>
         {% endfor %}
 
@@ -37,6 +39,7 @@
     {% endif %}
 </div>
 {% endblock content %}
+
 
 
 

@@ -7,7 +7,7 @@
 <h1>Поиск новостей</h1>
 <form method="get">
     {{ filterset.form.as_p }}  <!-- Форма фильтра -->
-    <button type="submit">Найти</button>
+    <button type="submit" class="btn btn-primary">Найти</button>
 </form>
 
 <!-- Пагинация сверху страницы -->
@@ -16,23 +16,27 @@
 <h2>Результаты поиска</h2>
 {% if news %}
     {% for post in news %}
-        <div>
+        <div class="post mb-4">
             <h2>{{ post.article_title_news|filter_words }}</h2>
-            <p>{{ post.text_title_news|truncatewords:20|filter_words }}...</p>
+
+            <!-- Краткий текст с поддержкой CKEditor -->
+            <div class="post-preview">
+                {{ post.text_title_news|safe|truncatewords:50 }}
+            </div>
 
             <!-- Кнопка "Читать далее" для перехода на страницу с полным текстом -->
-            <a href="{% url 'post_detail' pk=post.pk %}" class="btn btn-primary">Читать далее</a>
-
+            <a href="{% url 'post_detail' pk=post.pk %}" class="btn btn-primary mt-2">Читать далее</a>
         </div>
     {% endfor %}
 {% else %}
-    <p>Ничего не найдено.</p>
+    <p class="text-muted">Ничего не найдено.</p>
 {% endif %}
 
 <!-- Пагинация внизу страницы -->
 {% include 'flatpages/reused/pagination.html' %}
 
 {% endblock content %}
+
 
 
 
